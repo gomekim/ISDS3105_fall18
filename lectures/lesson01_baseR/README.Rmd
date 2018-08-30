@@ -132,18 +132,63 @@ Work out the exercises on a new branch of your git repo. Once you are confident 
 Respond to the following questions and push the responses to your GitHub:
  
  - Create a character vector `family` with your family members' name
+```{r}
+family <- c("Marie","Julien","Madahi","Kim")
+```
+ 
  - Create a vector `birth` with their birth year 
+ 
+```{r}
+birth <- 2018- c(1973, 1969,2002,1996)
+```
+ 
  - Create another vector `age` with your family members' ages (calculated using `birth`)
+```{r}
+age <-names(family)<- birth
+
+```
+
+ 
  - Use `typeof()` to make sure that `family`, `birth`, and `age` are the appropriate type (character, integer/double, integer/double)
+```{r}
+typeof(age)
+typeof(birth)
+typeof(family)
+```
+ 
+ 
  - Use `names()` to name the elements of `age` with the family members' names from `family`
+```{r}
+names(age)<- family
+
+```
+
  - Use inline code `r ##` to print your name and age (using indexing)
 
+```{r}
+## My name and age is 
+age[4]
+```
+
  - What happens when:
-   + You extract using a positive index bigger than the vector length?
+   + You extract using a positive index bigger than the vector length? 
+```{r}
+## will return NA
+```
+   
    + You subset by a name that doesn't exist?
+   
+   
    + You assign a number to position 20 of the age vector? 
+```{r}
+ ##it assigns the 20th index to that number 
+```
+   
    
  - Read carefully the documentation for `is.vector()`. If `is.vector(x)` retrieves `TRUE`, does it mean that `x` is an atomic vector?
+```{r}
+?is.vector
+```
 
 
 
