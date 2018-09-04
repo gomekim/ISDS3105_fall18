@@ -151,6 +151,9 @@ Work out the exercises on a new branch of your git repo. Once you are confident 
 Respond to the following questions and push the responses to your GitHub:
 
 -   Create a character vector `family` with your family members' name
+
+
+
 -   Create a vector `birth` with their birth year
 -   Create another vector `age` with your family members' ages (calculated using `birth`)
 -   Use `typeof()` to make sure that `family`, `birth`, and `age` are the appropriate type (character, integer/double, integer/double)
