@@ -64,21 +64,30 @@ iphoneSales$iPhone4S
 ```
 
 
-```{r}
+```{r }
 #For readability, show the code but hide the output of this chucnk once you tested the solutions
 # use dataframe[row,col] to
 
 #extract the first two elements of column "IPhone6s"
 
+iphoneSales[["iPhone6S"]][1:2]
+
 #subset iphoneSales to a dataframe with only time, iPhone5C, IPhoneX
+iphoneSales[ ,c("time","iPhone5C","IPhoneX")]
 
 #keep only the rows where the sales for iPhoneSE are higher than 7 AND are not NA (AND = &, OR = |, NOT = !)
+iphoneSales$iPhoneSE > 7 & ! is.na(iphoneSales$iPhoneSE)
+iphoneSales[iphoneSales$iPhoneSE > 7 & ! is.na(iphoneSales$iPhoneSE),]
 
 #Use %in% to keep only the rows for c("Sep 2014", "Sep 2015", "Sep 2018")
+iphoneSales[iphoneSales$time %in% c("Sep 2014", "Sep 2015", "Sep 2018"),]
 
 #calculate the mean() of the IPhone7 sold 
+mean(iphoneSales$iPhone7, na.rm = T)
 
 #use inline code to print the mean of the iphone sold in Jun 2018
+
+mean(as.numeric(iphoneSales[iphoneSales$time =='Jun 2018']), na.rm = T)
 
 ```
 
@@ -86,7 +95,7 @@ iphoneSales$iPhone4S
 However, the `tidyverse` is best suited for using rectangular data structures called `tibbles` instead of data frames. To convert a `data.frame` into a `tibble`:
 
 ```{r}
-as_tibble(iphoneSales)
+View(as_tibble(iphoneSales))
 class(as_tibble(iphoneSales))
 typeof(as_tibble(iphoneSales))
 ```
@@ -109,7 +118,8 @@ iphoneSales_df
 
 ```{r}
 # from iphoneSales_tibble extract the *vector* with the amounts of iphone7/7plus sold in 2017
-
+iphoneSales_tibble
+            iphoneSales$iPhone7 
 
 ```
 
