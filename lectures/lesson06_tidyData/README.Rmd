@@ -33,31 +33,36 @@ kable(sn_users)
 What rules of the 3 mentioned above does `sn_users` violate? Would you still be able to plot a line chart of the number of users by year?
 
 ```{r}
-#ggplot() +
-#  geom_line(aes(x  = ..., y =  ... ), data = ...) +
-#  geom_line(aes(x = ..., y = ...), data = ...)
+ggplot() +
+  geom_line(aes(x  = year, y =  facebook, color='fb' ), data = sn_users) +
+ geom_line(aes(x = year , y = twitter, color = "twitter"), data = sn_users)
 ```
 
 To tidy `sn_users` we want (i) to collapse the millions of users under one variable (called for instance `Mil.Users`), and (ii) to turn the headers `twitter` and `facebook` into levels of a single variable (for instance called `socialNet`). In other words, we want to create key-value pairs, duplicating the column `year` as many time as needed to preserve the association between social network (e.g. twitter), and a number of users observed at a certain year. This is quite straightforward using the function `tidyr::gather()`:
 
 ```{r}
 gather(sn_users, key = 'socialNet', value = 'Mil.Users', twitter, facebook) 
-#gather(sn_users, key = 'socialNet', value = 'Mil.Users', -year) #does the same as above: keeps everything BUT year
+gather(sn_users, key = 'socialNet', value = 'Mil.Users', -year)
+gather(sn_users, key='kim')
+#does the same as above: keeps everything BUT year
 ```
 
 Use the output from the `gather()` above to plot a line chart including both twitter and facebook data.
 
 ```{r}
-# gather() %>% 
-#ggpolot(...) +
-#  geom_line(...)
+gather(sn_users, key = 'socialNet', value = 'Mil.Users', twitter, facebook)  %>% ggpolot() +  geom_line(aes(x  ='year' , y =  'Mil.Users', color='socialNet'))
 ```
 
 Another example of untidy dataset is `untidyReview` (a dataset of online review ratings). Do you see why `untidyReview` is untidy? For instance, suppose we want to plot the distribution or ratings for each attributes (reviewOverall, reviewCleanliness, etc...) with `geom_bar()` and facets. How many/what variables to you need?
 
 ```{r}
-#gather()  use gather to 'tidy' the untidyReview
+gather(untidyReview, key= 'AttribruteName', value = 'Rating', -reviewId, -reviewStayYear)  # use gather to 'tidy' the untidyReview
 #pass the tidy dataset to ggplot() for plotting
+dt <- gather(untidyReview, key= 'AttribruteName', value = 'Rating', -reviewId, -reviewStayYear)
+gather(untidyReview, key= 'AttribruteName', value = 'Rating', -reviewId, -reviewStayYear) %>%
+  ggplot(dt, aes(x=Rating, color = Rating)) +
+geom_bar() + facet_wrap(~AttribruteName )
+
 ```
 
 Now inspect the dataset for `iphoneSales`, containing the number of iphones sold worldwide (in millions) in each quarter. Make sure you tidy the dataset appropriately to plot a line chart where:
@@ -72,9 +77,10 @@ Now inspect the dataset for `iphoneSales`, containing the number of iphones sold
 # Also, note that by default, the group is set to the interaction of all 
 # discrete variables in the plot.
 
-gather(iphoneSales, ... ) %>% 
+gather(iphoneSales, key= 'Quarters', value= 'value', -year) %>% 
   ggplot() +
-  geom_line(aes(x= ..., y = ..., color = ...))
+  geom_line(aes(x= value, y = year))
+
 ```
  
 
