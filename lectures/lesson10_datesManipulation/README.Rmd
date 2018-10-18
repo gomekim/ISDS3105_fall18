@@ -110,6 +110,12 @@ second(datime)
 ```{r}
 load(here::here('data', 'dataset.RData'))
 dt <- left_join(dt, lkt)
+
+
+##tail(names(sort(table(dt$day))))
+
+dt%>%
+  
 ```
 
 #. Use `case_when` to refactor `offensetime_discrete` using the following labels:
@@ -120,6 +126,16 @@ dt <- left_join(dt, lkt)
    - >10.30 am but < 2.00 pm -----> day
    - >=2.00 am but < 5.30 pm -----> afternoon
    - anything else ---> evening
+   
+   dt%>% 
+   mutate(offensetime_discrete= case_when(
+   hour(offensetime) >= between(10:00pm , 5:00am) ~ "night"
+   hour(offensetime) >= between(5:00am , 10:30am)  ~ "morning"
+   hour(offensetime) >= between(10:30am , 2:00pm)  ~ "day"
+   hour(offensetime) >= between(10:30am , pm)  ~ "afternoon"
+   
+   
+   ))
 ```
 
 
@@ -127,10 +143,10 @@ dt <- left_join(dt, lkt)
 
 ```{r, error=TRUE}
 #substitute ... with the appropriate code
-ggplot(...) +
-  geom_density(aes(x = ...)) +
-  facet_wrap(~ ..., scales = ... , ncol = 1) +
-  scale_x_date(name = ... , date_breaks = ..., date_labels = ...) #?strptime() for the list of specifications
+ggplot(dt) +
+  geom_density(aes(x = offensedate)) +
+  facet_wrap(~ year, scales ='free_x' , ncol = 1) +
+  scale_x_date(name = "month", , date_breaks = '1 month', date_labels = '%b') #?strptime() for the list of specifications
 ```
 
 ## Exercise

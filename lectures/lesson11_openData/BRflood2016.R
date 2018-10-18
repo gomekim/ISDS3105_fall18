@@ -3,10 +3,11 @@
 #' create your  `token <- c(sec = ..., app = ...)` and keep 
 #' it into a separate .R to source()
 
-source(here('lectures/lesson11_openData/tokenSocrata.R'))
+
 library(RSocrata)
 library(here)
 library(tidyverse)
+source(here('lectures/lesson11_openData/tokenfile.R'))
 
 #' Google API requirements has changed. As a results, the package
 #' ggmap needs revisions. For now, we are stacked witht he dev version
