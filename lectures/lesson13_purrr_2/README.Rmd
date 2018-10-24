@@ -82,12 +82,23 @@ Create an ggplot function to draw a linechart of the `AverageRoomRate` over time
 
 ```{r}
 #' HINTS:
+ hotelFun<- function(data, title) {
+                   ggplot(data= filter(hotels, hotels$hotel== "GrandHotelTaipei"))+
+                  
+    ggsave(h.jpeg)
+     
+ }
+
+hotels %>% mutate_at(vars(starts_with('hot')), .funs = funs(mean,hotelFun(hotel,AverageRoomRate)))
+
 #' start off simple: create a function that takes 1 dataset and a title/filename and plots/saves 1 plot for 1 hotel
 #' check ?ggsave() to learn how to save ggplot files. Use `here()` if you need to specify a filepath. Ideally,
 #' you want to combine hotel names with file extensions (e.g., png, jpeg) to create meaningful file names. Then, you 
 #' want to save each file into ISDS3105_fall/lectures/lesson13_purrr_2/timeLines.
 #' You could use `dir.create()` to create the `timeLines` directory - perhaps conditionally using `dir.exists()`
 #' if the folder does not exists yet.
+
+
 ```
 
 
