@@ -1,11 +1,10 @@
 lesson 15: Regression
 ================
 
-# Introduction
+Introduction
+============
 
-In this lesson we will use a general linear model (glm) and in
-particular linear regression to investigate the relationship between
-heat and the daily number of crimes in Baton Rouge.
+In this lesson we will use a general linear model (glm) and in particular linear regression to investigate the relationship between heat and the daily number of crimes in Baton Rouge.
 
 ``` r
 #' Retrieve our data from:
@@ -19,18 +18,14 @@ dt_crimes <- read_rds(here::here('lectures', 'lesson15_regression', 'data', 'cri
 dt_crimes <- dt_crimes %>% left_join(dt_temp, by = c('offense_date' = 'Day'))
 ```
 
-# Fitting a linear model
+Fitting a linear model
+======================
 
 A linear model has three elements:
 
-  - random component, which consists of the response variable y and its
-    probability distribution
-  - linear predictor, or explanatory variable for y (can be continous or
-    categorical)
-  - link function, which connects the random component to the linear
-    predictor (e.g., an identity function for a linear model)
-
-<!-- end list -->
+-   random component, which consists of the response variable y and its probability distribution
+-   linear predictor, or explanatory variable for y (can be continous or categorical)
+-   link function, which connects the random component to the linear predictor (e.g., an identity function for a linear model)
 
 ``` r
 ggplot(data = dt_crimes, aes(x = TempHigh, y = n)) +
@@ -43,14 +38,9 @@ ggplot(data = dt_crimes, aes(x = TempHigh, y = n)) +
 ## Warning: Removed 1 rows containing missing values (geom_point).
 ```
 
-![](README_files/figure-gfm/visualizing%20a%20lm-1.png)<!-- -->
+![](README_files/figure-markdown_github/visualizing%20a%20lm-1.png)
 
-`se` is for displaying confidence intervals (95% by default). The
-interpretation of confidence intervals it *not* a probability of being
-right. Check [this animation](http://rpsychologist.com/d3/CI/) for a
-brief explanation. It is a range of plausible values for the population
-paremeter being estimated along with the estimation
-procedure.
+`se` is for displaying confidence intervals (95% by default). The interpretation of confidence intervals it *not* a probability of being right. Check [this animation](http://rpsychologist.com/d3/CI/) for a brief explanation. It is a range of plausible values for the population paremeter being estimated along with the estimation procedure.
 
 ``` r
 fit <- glm(n ~ TempHigh, family = poisson(link = 'log'), data = dt_crimes)
@@ -84,32 +74,26 @@ summary(fit)
 #summary(glm(n ~ TempHigh,  data = dt_crimes))
 ```
 
-Here is a quick-and-dirty way to think about setting `family` with
-respect to the response variable:
+Here is a quick-and-dirty way to think about setting `family` with respect to the response variable:
 
-  - `family = gaussian(link = "identity")` for continous variables
-  - `family = poisson(link = 'log')` for continous variables
-  - `family = binomial(link = 'logit')` for fitting a logistic
-    regression to predict binary variables (yes/no)
+-   `family = gaussian(link = "identity")` for continous variables
+-   `family = poisson(link = 'log')` for continous variables
+-   `family = binomial(link = 'logit')` for fitting a logistic regression to predict binary variables (yes/no)
 
-## What can I a glm use the model for?
+What can I a glm use the model for?
+-----------------------------------
 
-  - *Explanation*: you can write statements such as:
+-   *Explanation*: you can write statements such as:
 
-There is a significant positive association between heat and crimes. In
-particular, for a 1 unite increase in the predictor (TempHigh), there is
-a 1.00472 increase in the count of crimes.
+There is a significant positive association between heat and crimes. In particular, for a 1 unite increase in the predictor (TempHigh), there is a 1.00472 increase in the count of crimes.
 
-  - *Prediction*: suppose you have a dataset of values to predict:
-
-<!-- end list -->
+-   *Prediction*: suppose you have a dataset of values to predict:
 
 ``` r
 toPredict <- data_frame(TempHigh = c(80, 100))
 ```
 
-To calculate prediction confidence intervals
-use:
+To calculate prediction confidence intervals use:
 
 ``` r
 pi <- predict(fit, type = 'response', newdata = toPredict, se.fit = T)[1:2] #95% prediction interval = -1.96*se< y-hat < + 1.96*se
@@ -121,31 +105,22 @@ data_frame(fitted = pi$fit, lower = (pi$fit - 1.96*pi$se.fit), upper = (pi$fit +
 ## 2   149.  147.  152.
 ```
 
-Note that the interpretation of prediction intervals is not
-straighforward. In brief: a 95% prediction interval means that if we
-used this method to predict an interval on many different datasets on
-which the model fits, 95% of the time the interval would contain the
-predicted value.
+Note that the interpretation of prediction intervals is not straighforward. In brief: a 95% prediction interval means that if we used this method to predict an interval on many different datasets on which the model fits, 95% of the time the interval would contain the predicted value.
 
-# Model fit
+Model fit
+=========
 
-Checking the model fit means assessing how good our model is in
-reflecting our actual outcome variable. That means analyzing the
-residuals looking for patterns that suggest misfit. What follows are
-some visual tools to analyze residuals. This list if *very far* from
-being complete and exhaustive. However, it shold give you an idea of
-looking only at significance can be very misleading when interpreting
-the results of a regression model.
+Checking the model fit means assessing how good our model is in reflecting our actual outcome variable. That means analyzing the residuals looking for patterns that suggest misfit. What follows are some visual tools to analyze residuals. This list if *very far* from being complete and exhaustive. However, it shold give you an idea of looking only at significance can be very misleading when interpreting the results of a regression model.
 
 ``` r
 dt_res <- fortify(fit)
-ggplot(dt_res, aes(sample = .fitted))+
+ggplot(dt_res, aes(sample = .resid))+
   stat_qq() + 
   stat_qq_line() +
   ggtitle('Normal QQ-plot')
 ```
 
-![](README_files/figure-gfm/analysis%20of%20the%20residual-1.png)<!-- -->
+![](README_files/figure-markdown_github/analysis%20of%20the%20residual-1.png)
 
 ``` r
 ggplot(dt_res, aes(x = .fitted, y = .stdresid))+
@@ -154,7 +129,7 @@ ggplot(dt_res, aes(x = .fitted, y = .stdresid))+
   ggtitle('Standardized Residuals vs. Fitted')
 ```
 
-![](README_files/figure-gfm/analysis%20of%20the%20residual-2.png)<!-- -->
+![](README_files/figure-markdown_github/analysis%20of%20the%20residual-2.png)
 
 ``` r
 ggplot(dt_res, aes(x = .hat, y = .cooksd))+
@@ -163,20 +138,15 @@ ggplot(dt_res, aes(x = .hat, y = .cooksd))+
   ggtitle("Cook's dist vs Leverage")
 ```
 
-![](README_files/figure-gfm/analysis%20of%20the%20residual-3.png)<!-- -->
+![](README_files/figure-markdown_github/analysis%20of%20the%20residual-3.png)
 
 How to remedy for poor fit?
 
-  - Adding more predictors (but there is a tradeoff with
-    interpretability)
-  - Transform the predictors (e.g., `glm(y ~ x^2, data)` instead of
-    `glm(y ~ x, data)`)
-  - Use different glm, maybe the relationship is non-linear (but that’s
-    is beyond our scope for this class)
+-   Adding more predictors (but there is a tradeoff with interpretability)
+-   Transform the predictors (e.g., `glm(y ~ x^2, data)` instead of `glm(y ~ x, data)`)
+-   Use different glm, maybe the relationship is non-linear (but that's is beyond our scope for this class)
 
-What does it mean when we add another predictor? Suppose we add
-precipitations
-too
+What does it mean when we add another predictor? Suppose we add precipitations too
 
 ``` r
 fit2 <- glm(n ~ TempHigh + Precip, family = poisson(link = 'log'), data = dt_crimes)
@@ -198,20 +168,13 @@ fit2 <- glm(n ~ TempHigh + Precip, family = poisson(link = 'log'), data = dt_cri
 
 ### Exercise
 
-  - Using `fit`, calculate a prediction interval for the number of
-    crimes for a day with a max temperature of 84 and no rain, and
-    another day with max temperature 84 and 2 inches of rain.
+-   Using `fit`, calculate a prediction interval for the number of crimes for a day with a max temperature of 84 and no rain, and another day with max temperature 84 and 2 inches of rain.
 
-  - Plot the residuals for fit2 and analyze them. Select 1-2
-    observations the particularly misbehave and think about possible
-    causes (e.g. gameday? mardi-gras?)
+-   Plot the residuals for fit2 and analyze them. Select 1-2 observations the particularly misbehave and think about possible causes (e.g. gameday? mardi-gras?)
 
-## References
+References
+----------
 
-  - Agresti, Alan. *Foundations of linear and generalized linear
-    models*. John Wiley & Sons, 2015. (An introduction to GLMs and has a
-    lot of examples in R:)
+-   Agresti, Alan. *Foundations of linear and generalized linear models*. John Wiley & Sons, 2015. (An introduction to GLMs and has a lot of examples in R:)
 
-  - Agresti, Alan. *An introduction to categorical data analysis*.
-    Wiley, 2018. (Available online
-    [here](https://mregresion.files.wordpress.com/2012/08/agresti-introduction-to-categorical-data.pdf))
+-   Agresti, Alan. *An introduction to categorical data analysis*. Wiley, 2018. (Available online [here](https://mregresion.files.wordpress.com/2012/08/agresti-introduction-to-categorical-data.pdf))

@@ -90,7 +90,7 @@ Checking the model fit means assessing how good our model is in reflecting our a
 
 ```{r analysis of the residual}
 dt_res <- fortify(fit)
-ggplot(dt_res, aes(sample = .fitted))+
+ggplot(dt_res, aes(sample = .resid))+
   stat_qq() + 
   stat_qq_line() +
   ggtitle('Normal QQ-plot')
@@ -137,8 +137,21 @@ fit2 <- glm(n ~ TempHigh + Precip, family = poisson(link = 'log'), data = dt_cri
 ### Exercise
 
  - Using `fit`, calculate a prediction interval for the number of crimes for a day with a max temperature of 84 and no rain, and another day with max temperature 84 and 2 inches of rain.
+```{r}
+
+toPredict1 <- data_frame(TempHigh = 84 , precip=0)
+
+pi1 <- predict(fit, type = 'response', newdata = toPredict1, se.fit = T)[1:2] #95% prediction interval = -1.96*se< y-hat < + 1.96*se
+data_frame(fitted = pi1$fit, lower = (pi1$fit - 1.96*pi1$se.fit), upper = (pi1$fit + 1.96*pi1$se.fit))
+
+
+```
+ 
  
  - Plot the residuals for fit2 and analyze them. Select 1-2 observations the particularly misbehave and think about possible causes (e.g. gameday? mardi-gras?)
+```{r}
+
+```
 
 
 ## References
