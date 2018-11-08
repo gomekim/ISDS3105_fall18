@@ -18,6 +18,16 @@ knitr::opts_chunk$set(echo = F)
 
 ```{r}
 #use selectInput() to create a dropdown menu
+
+selectInput("X variable",label = "X variable",
+             choices = names(bad_drivers), 
+             selected = 'perc_speeding')
+
+selectInput("Y variable",label = "X variable",
+             choices = names(bad_drivers), 
+             selected = 'perc_alcohol')
+
+
 #you can use html code to position the input widget ----  e.g. div(style="display:inline-block", .... )
 ```
 
