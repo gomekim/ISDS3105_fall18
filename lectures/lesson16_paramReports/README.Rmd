@@ -75,10 +75,10 @@ To apply a function to each element of a vector, use the function `map()`:
 ```{r, eval=FALSE}
 regions <- distinct(steak_survey, region) %>% drop_na()
 map(.x = pull(regions), 
-     ~ rmarkdown::render(here::here('lectures', 'lesson16_paramReports', 'template.Rmd'),
+     ~ rmarkdown::render(here::here('lectures', 'lesson16_paramReports', 'template.Rmd'),output_format = 'html_document',
                                   params = list(steak = T, region = .x), 
                                   output_dir = here::here('lectures', 'lesson16_paramReports', 'report'),
-                                  output_file = paste0(.x,'.pdf')))
+                                  output_file = paste0(.x,'.html')))
 ```
 
 ## Exercise

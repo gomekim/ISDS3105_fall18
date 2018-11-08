@@ -1,28 +1,17 @@
 Parameterized Reports
 ================
 
-# Why is it useful to parametrize reports?
+Why is it useful to parametrize reports?
+========================================
 
-Suppose you want to produce individual regional reports for steak
-cooking preferences from `steak_survey`, which means 9 different
-reports. Using RMarkdown you can parametrize the variables of interest,
-that way you do not have to knit each reports manually.
+Suppose you want to produce individual regional reports for steak cooking preferences from `steak_survey`, which means 9 different reports. Using RMarkdown you can parametrize the variables of interest, that way you do not have to knit each reports manually.
 
-For this example, the body of each report consists of a frequency table
-of behaviors (e.g., `smoke`, `gamble`) by education level and a bar
-chart of cooking preferences (`steak_prep`). In each report, we want to
-set two parameters:
+For this example, the body of each report consists of a frequency table of behaviors (e.g., `smoke`, `gamble`) by education level and a bar chart of cooking preferences (`steak_prep`). In each report, we want to set two parameters:
 
-1.  A logical value, for including/removing NA from the barchart of
-    `steak_prep` preferences (i.e., individuals who do not eat steak at
-    all).
-2.  A character value, for the region of interest to use both as a title
-    in each report and to select the relevant observations.
+1.  A logical value, for including/removing NA from the barchart of `steak_prep` preferences (i.e., individuals who do not eat steak at all).
+2.  A character value, for the region of interest to use both as a title in each report and to select the relevant observations.
 
-To start, think about the code you would write for a non-parametrized
-version of the report for a single region. Suppose the first report is
-about those subjects who eat steak (`steak==T`) in the `South Atlantic`
-region.
+To start, think about the code you would write for a non-parametrized version of the report for a single region. Suppose the first report is about those subjects who eat steak (`steak==T`) in the `South Atlantic` region.
 
 First, we subset the dataset
 
@@ -31,8 +20,7 @@ dt <- steak_survey %>%
   filter(region == 'South Atlantic') 
 ```
 
-Then, we can use the new dataset to render a frequency table of the
-behaviors:
+Then, we can use the new dataset to render a frequency table of the behaviors:
 
 ``` r
 dt %>% 
@@ -65,40 +53,27 @@ ggplot(dt) +
   ggtitle(paste('Steak preferences in the South Atlantic region'))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](README_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
-# How to parametrize reports?
+How to parametrize reports?
+===========================
 
-The dynamic content of the regional report is a function of `steak` and
-`region`. We want to pass different values for `steak` and `region` as
-*parameters*, that we specify in yaml of each document using the
-attribute `params`. For instance:
+The dynamic content of the regional report is a function of `steak` and `region`. We want to pass different values for `steak` and `region` as *parameters*, that we specify in yaml of each document using the attribute `params`. For instance:
 
     title: ""
     params:
       steak: 'T'
       region: 'South Atlantic'
 
-Note that in the yaml **indentation matters**. The reason why we define
-parameters in the yaml instead of creating new objects is that it is
-easier to pass parameters functionally through the RMarkdown rendering
-function. For instance, we can generate a report for the region
-`Pacific`
-using:
+Note that in the yaml **indentation matters**. The reason why we define parameters in the yaml instead of creating new objects is that it is easier to pass parameters functionally through the RMarkdown rendering function. For instance, we can generate a report for the region `Pacific` using:
 
 ``` r
 rmarkdown::render(here::here('lectures', 'lesson16_paramReports', 'template.Rmd'), params = list(steak = 'F', region = 'Pacific'))
 ```
 
-However, we do not want to pass the region names one by one manually.
-Instead, we can take a vector of the unique values for `region` from the
-`steak_survey` and programmatically use it to render the reports. Since
-each iteration saves a PDF of the knitted output, we want generate also
-each PDF file name functionally to avoid overwriting the same file at
-each iteration.
+However, we do not want to pass the region names one by one manually. Instead, we can take a vector of the unique values for `region` from the `steak_survey` and programmatically use it to render the reports. Since each iteration saves a PDF of the knitted output, we want generate also each PDF file name functionally to avoid overwriting the same file at each iteration.
 
-To apply a function to each element of a vector, use the function
-`map()`:
+To apply a function to each element of a vector, use the function `map()`:
 
 ``` r
 regions <- distinct(steak_survey, region) %>% drop_na()
@@ -109,22 +84,18 @@ map(.x = pull(regions),
                                   output_file = paste0(.x,'.pdf')))
 ```
 
-## Exercise
+Exercise
+--------
 
-Remember the map of alcohol consumption for beer, spirits, and wine?
-Create a parametrized report for each type of serving using parameters
-to render dynamically:
+Remember the map of alcohol consumption for beer, spirits, and wine? Create a parametrized report for each type of serving using parameters to render dynamically:
 
 1.  The report title
 
 2.  A world-map of alcohol consumption
 
-3.  A narrative which includes the name of the country with the highest
-    consumption for that particular serving type.
+3.  A narrative which includes the name of the country with the highest consumption for that particular serving type.
 
-Use the `map_data("world")` and the dataset on [alcohol consumption in
-the
-world](https://github.com/fivethirtyeight/data/blob/master/alcohol-consumption)
+Use the `map_data("world")` and the dataset on [alcohol consumption in the world](https://github.com/fivethirtyeight/data/blob/master/alcohol-consumption)
 
 ``` r
 dt <- read_csv('https://raw.githubusercontent.com/fivethirtyeight/data/master/alcohol-consumption/drinks.csv')
