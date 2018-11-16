@@ -67,7 +67,7 @@ Column {data-width=350}
 ```{r}
 #create a function to plot a linechart given a dataset `df` and a country name `country`
 statePlot <- function(df, country) { 
-          .....
+  
 }
 
 renderPlot({ 
